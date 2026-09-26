@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="mr" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>न्यूट्रल गियर आणि क्लच!</title>
+  
+  <!-- IBM Plex Sans & IBM Plex Sans Devanagari via Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Devanagari:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            marathi: ['"IBM Plex Sans Devanagari"', '"IBM Plex Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              amber: '#F59E0B',
+              coral: '#F43F5E',
+              teal: '#0D9488',
+              cyan: '#06B6D4',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'IBM Plex Sans Devanagari', 'IBM Plex Sans', sans-serif;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+      hyphens: none;
+    }
+
+    .essay-body {
+      text-align: justify;
+      text-justify: inter-word;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+      line-height: 2;
+    }
+
+    /* Gear Shift SVG Keyframe Animations */
+    @keyframes pulseNeutral {
+      0%, 100% {
+        r: 18;
+        filter: drop-shadow(0 0 10px rgba(13, 148, 136, 0.85));
+      }
+      50% {
+        r: 22;
+        filter: drop-shadow(0 0 18px rgba(6, 182, 212, 1));
+      }
+    }
+
+    @keyframes pedalPress {
+      0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+      }
+      50% {
+        transform: translateY(7px) rotate(-4deg);
+      }
+    }
+
+    @keyframes leverShift {
+      0%, 100% {
+        transform: translate(0, 0);
+      }
+      20% {
+        transform: translate(0, -32px); /* Gear 3 */
+      }
+      40% {
+        transform: translate(0, 0); /* Neutral */
+      }
+      60% {
+        transform: translate(-38px, -32px); /* Gear 1 */
+      }
+      80% {
+        transform: translate(0, 0); /* Back to Neutral */
+      }
+    }
+
+    .animate-neutral-node {
+      animation: pulseNeutral 2.8s infinite ease-in-out;
+      transform-origin: center;
+    }
+
+    .animate-pedal {
+      animation: pedalPress 3.2s infinite ease-in-out;
+      transform-origin: 220px 24px;
+    }
+
+    .animate-lever-knob {
+      animation: leverShift 6s infinite ease-in-out;
+      transform-origin: 105px 78px;
+    }
+
+    /* Smooth transition for theme switching */
+    .theme-transition {
+      transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+    }
+  </style>
+</head>
+<body class="min-h-screen theme-transition bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 flex flex-col items-center justify-start p-4 sm:p-6 md:p-10 font-marathi">
+
+  <main class="w-full max-w-2xl mx-auto flex flex-col">
+    <!-- Top toolbar: Theme Toggle and Share Button -->
+    <div class="flex items-center justify-end gap-3 mb-6 sm:mb-8">
+      <!-- Share Button -->
+      <button id="shareBtn" type="button" aria-label="शेअर करा" class="inline-flex items-center justify-center p-2.5 rounded-full border border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-700 dark:text-slate-200 shadow-sm hover:scale-105 active:scale-95 transition-all">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <circle cx="18" cy="5" r="3"></circle>
+          <circle cx="6" cy="12" r="3"></circle>
+          <circle cx="18" cy="19" r="3"></circle>
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+        </svg>
+      </button>
+
+      <!-- Theme Switcher Toggle -->
+      <button id="themeToggle" type="button" aria-label="थीम बदला" class="inline-flex items-center justify-center p-2.5 rounded-full border border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-700 dark:text-slate-200 shadow-sm hover:scale-105 active:scale-95 transition-all">
+        <!-- Sun icon (shown in dark mode) -->
+        <svg id="sunIcon" class="w-5 h-5 hidden dark:block text-amber-400" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2"></path>
+          <path d="M12 20v2"></path>
+          <path d="m4.93 4.93 1.41 1.41"></path>
+          <path d="m17.66 17.66 1.41 1.41"></path>
+          <path d="M2 12h2"></path>
+          <path d="M20 12h2"></path>
+          <path d="m6.34 17.66-1.41 1.41"></path>
+          <path d="m19.07 4.93-1.41 1.41"></path>
+        </svg>
+        <!-- Moon icon (shown in light mode) -->
+        <svg id="moonIcon" class="w-5 h-5 block dark:hidden text-slate-700" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Centered Document Title -->
+    <h1 class="text-center font-bold text-2xl sm:text-3xl md:text-4xl text-slate-900 dark:text-white tracking-wide mb-6">
+      न्यूट्रल गियर आणि क्लच!
+    </h1>
+
+    <!-- Animated Light & Colorful SVG Graphic -->
+    <div class="w-full flex justify-center items-center my-3 sm:my-5">
+      <div class="p-3 sm:p-5 rounded-2xl bg-white/70 dark:bg-slate-900/60 shadow-lg border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md">
+        <svg viewBox="0 0 310 160" class="w-64 sm:w-80 md:w-96 h-auto select-none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <!-- Linear Gradients for colorful visuals -->
+            <linearGradient id="trackGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#38BDF8" />
+              <stop offset="50%" stop-color="#06B6D4" />
+              <stop offset="100%" stop-color="#14B8A6" />
+            </linearGradient>
+
+            <linearGradient id="neutralGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#2DD4BF" />
+              <stop offset="100%" stop-color="#0284C7" />
+            </linearGradient>
+
+            <linearGradient id="clutchGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#FB7185" />
+              <stop offset="100%" stop-color="#E11D48" />
+            </linearGradient>
+
+            <linearGradient id="pedalMetal" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#94A3B8" />
+              <stop offset="50%" stop-color="#E2E8F0" />
+              <stop offset="100%" stop-color="#64748B" />
+            </linearGradient>
+
+            <!-- Glow Filter -->
+            <filter id="gearGlow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="3.5" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+          </defs>
+
+          <!-- GEAR SHIFTER CONSOLE (Left side) -->
+          <g transform="translate(10, 2)">
+            <!-- Pattern Base Plate -->
+            <rect x="18" y="24" width="170" height="110" rx="16" fill="rgba(15, 23, 42, 0.05)" class="dark:fill-slate-800/40" />
+
+            <!-- Gear Shift H-pattern Channels -->
+            <!-- Neutral Horizontal Rail -->
+            <line x1="68" y1="78" x2="142" y2="78" stroke="url(#trackGrad)" stroke-width="7" stroke-linecap="round" />
+            <!-- Column 1-2 -->
+            <line x1="68" y1="46" x2="68" y2="110" stroke="url(#trackGrad)" stroke-width="7" stroke-linecap="round" />
+            <!-- Column 3-4 -->
+            <line x1="105" y1="46" x2="105" y2="110" stroke="url(#trackGrad)" stroke-width="7" stroke-linecap="round" />
+            <!-- Column 5-R -->
+            <line x1="142" y1="46" x2="142" y2="110" stroke="url(#trackGrad)" stroke-width="7" stroke-linecap="round" />
+
+            <!-- Gear Position Circles & Badges -->
+            <!-- 1st Gear -->
+            <circle cx="68" cy="46" r="11" fill="#F43F5E" />
+            <text x="68" y="50" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">1</text>
+
+            <!-- 2nd Gear -->
+            <circle cx="68" cy="110" r="11" fill="#F97316" />
+            <text x="68" y="114" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">2</text>
+
+            <!-- 3rd Gear -->
+            <circle cx="105" cy="46" r="11" fill="#EAB308" />
+            <text x="105" y="50" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">3</text>
+
+            <!-- 4th Gear -->
+            <circle cx="105" cy="110" r="11" fill="#10B981" />
+            <text x="105" y="114" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">4</text>
+
+            <!-- 5th Gear -->
+            <circle cx="142" cy="46" r="11" fill="#3B82F6" />
+            <text x="142" y="50" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">5</text>
+
+            <!-- Reverse Gear (R) -->
+            <circle cx="142" cy="110" r="11" fill="#8B5CF6" />
+            <text x="142" y="114" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">R</text>
+
+            <!-- Glowing Neutral Central Node (N) -->
+            <g>
+              <circle cx="105" cy="78" r="18" fill="url(#neutralGrad)" class="animate-neutral-node" filter="url(#gearGlow)" />
+              <text x="105" y="83" font-size="14" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="1">N</text>
+            </g>
+
+            <!-- Animated Gear Lever Stick & Knob -->
+            <g class="animate-lever-knob">
+              <circle cx="105" cy="78" r="7" fill="#ffffff" opacity="0.95" />
+              <circle cx="105" cy="78" r="4" fill="#0284C7" />
+            </g>
+          </g>
+
+          <!-- CLUTCH PEDAL MECHANISM (Right side) -->
+          <g transform="translate(10, 2)">
+            <!-- Pedestal Mount -->
+            <rect x="220" y="20" width="48" height="8" rx="4" fill="#64748B" />
+
+            <!-- Animated Clutch Pedal Group -->
+            <g class="animate-pedal">
+              <!-- Arm -->
+              <path d="M 238 24 L 250 88" stroke="url(#pedalMetal)" stroke-width="7" stroke-linecap="round" />
+              <circle cx="238" cy="24" r="5" fill="#334155" />
+              
+              <!-- Pedal Pad -->
+              <rect x="234" y="88" width="34" height="24" rx="6" fill="url(#clutchGrad)" filter="url(#gearGlow)" />
+              <!-- Grip Ribs -->
+              <line x1="240" y1="94" x2="262" y2="94" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.8" />
+              <line x1="240" y1="100" x2="262" y2="100" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.8" />
+              <line x1="240" y1="106" x2="262" y2="106" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.8" />
+            </g>
+
+            <!-- Clutch Marathi Tag on Pedal base -->
+            <text x="251" y="132" font-size="12" font-weight="700" fill="#E11D48" text-anchor="middle">क्लच (मन)</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Content Section: Body Text (Justified, Unbroken Words) -->
+    <article class="essay-body text-base sm:text-lg text-slate-700 dark:text-slate-200 mt-6 sm:mt-8 space-y-6">
+      <p>
+        कोणतेही वाहन सुयोग्यरित्या चालवायचे असेल तर त्यात महत्वाचे असते गियर बदलणे. रस्त्याची स्थिती, त्याचा उतार, चढण आणि अपेक्षित असलेला सुरक्षित वेग याचा विचार करून चालकास योग्य त्या गियरमधे वाहन ‘हाकावे’ लागते. त्या त्या परिस्थितीला अनुरूप योग्य गियरमधे वाहन नसेल तर एक तर ते नीट चालत नाही किंवा चालतच नाही. सध्याच्या ‘ऑटोमॅटिक गियर शिफ्ट’च्या जमान्यातही गियर ‘टाकावे’ लागत नसले तरी गियर रेश्यो आपोआप बदलत असतात. थोडक्यात काय तर योग्य गियरमधे वाहनाचे चालणे म्हणजे वाहनाच्या इंजिनाने चाकांच्या द्वारे रस्त्याशी जुळवून घेणे!
+      </p>
+
+      <p>
+        सध्या पन्नाशीत असलेल्यांची दुचाकी आणि चारचाकी वाहनांशी ओळख झाली ती गियर्सशी मैत्री करूनच. आज ऑटो-गियरचा बोलबाला असला तरी त्यावेळी सर्वच स्कूटर-मोटरसायकलला ३/५ गियर असत आणि कारला ५+रिव्हर्स. इंजिन म्हणजे वाहनाची ताकद आणि गियरबॉक्स &gt;&gt; चाके म्हणजे गती. इंजिन आणि गियर्समधे दुवा साधण्याचे काम करतो तो क्लच.
+      </p>
+
+      <p>
+        वाहन चालवायला सुरवात करायची पहिल्या गियरमधे आणि मग जसा रस्ता आणि ट्रॅफिक असेल त्यानुसार पुढच्या गियर्समधे अदलून-बदलून चालवायचे. एका गियर मधून दुसऱ्यात शिफ्ट होताना क्लच वापरावा लागतो, नाहीतर ‘खडखडाट’ होऊन पडझड व वाहनाचे नुकसान होते. पहिल्या गियरमधे ताकद असते तर पुढच्या गियर्समधे वेग. पहिल्या गियर मधून पुढच्यात जाताना मधे न्यूट्रल गियर असतो. हा गियर म्हणजे इंजिन चालू पण वाहन थांबलेले असा ‘विसावा’. वेगात असलेले वाहन त्याची गती कमी करत थांबवायचे म्हणजे खालच्या गियर मधे येत येत अखेरीस न्यूट्रलमधे आणून उभे करायचे.
+      </p>
+
+      <p>
+        आयुष्याच्या प्रवासात मार्गक्रमण करणे म्हणजे गियरचे वाहन चालवण्यासारखे असते. इथे हृदयरूपी इंजिन कायमस्वरूपी चालूच असते. परिस्थिती/अनुभवानुरूप, कारणपरत्वे असणाऱ्या/बदलणाऱ्या आपल्या भाव-भावना व शारीरिक क्रिया-प्रतिक्रिया म्हणजे या आयुष्य-गाडीचे त्या त्या वेळेसचे गियर आणि हृदय, भाव-भावना व शरीर यांच्यात दुवा साधण्याचे काम करणारा क्लच म्हणजे मन!
+      </p>
+
+      <p>
+        रोज रात्रीच्या ‘न्यूट्रल’ मधील विश्रांती नंतर नित्यक्रम सुरू करताना तसेच जीवनात काही नवीन सुरुवात करताना अथवा काही अडथळे, अडचणी आल्या तर त्यातून ताकदीने मार्ग काढायला क्लच-भान ठेवत टाकावा लागतो तो मानसिक-शारीरिक ताकदीचा पहिला गियर. मग रोजच्या दिनक्रमात गरजेनुसार अदलून-बदलून दुसरा, तिसरा, चौथा आणि पाचवा. एंजॉय करताना, निवांत असताना देखील पाचवा. क्वचित प्रसंगी आपल्याच भल्यासाठी रिव्हर्स गियर देखील!
+      </p>
+
+      <p>
+        या सगळ्यात ‘क्लच’चे म्हणजे मनाचे स्वास्थ्य बरेच महत्वाचे असते. आयुष्याचा मार्ग सतत गुळगुळीत आणि सपाट नसतो, त्यामुळे वारंवार भावनिक-शारीरिक गियर बदल करणे क्रमप्राप्त असते. असे करताना मनरूपी क्लच जर स्मूथ नसेल तर असे शारीरिक व भावनिक गियर शिफ्टिंग करताना खडखडाट होतो व शरीर व हृदयावर त्याचे दृश्य-अदृश्य ओरखडे उठतात.
+      </p>
+
+      <p>
+        या टाळता न येणाऱ्या ‘भावनांच्या गियर शिफ्टिंगने’ इंजिन व वाहनावर म्हणजे शरीरावर आणि क्लचवर अर्थात मनावर ताण येऊ शकतो. पण इथे इंजिन बंद करण्याची सोय नसल्याने या वाहनात क्लच बरोबरच न्यूट्रल गियरचे महत्व देखील अनन्यसाधारण आहे.
+      </p>
+
+      <p>
+        या शरीर-मन रूपी संपूर्ण वाहनाला अधून मधून न्यूट्रल मधे आणत विश्रांती देण्याने त्याची कार्यक्षमता वाढायला, टिकून राहायला मदत होते. जीवनात काही अडचणी-अडथळे आले असतील तर थोडा वेळ न्यूट्रलमधे थांबून ‘क्लच-भान’ ठेवत मानसिक-शारीरिक ताकदीचा पहिला गियर टाकून त्यावर जोमाने मात करणे फायद्याचे असते. रोजचा दिनक्रम जरी नशिबाने सतत पाचव्या गियरच्या ‘ऑटो-क्रूझ’वर राहू शकत असला तरीही त्यातही तोचतोचपणा येऊ नये; शरीर-मनाने मार्गात येऊ शकणाऱ्या अर्जंट ब्रेकिंगसह इतर कोणत्याही प्रसंगाला सामोरे जाण्यासाठी सज्ज असावे म्हणून नियमितपणे पाचव्या गियरमधून योग्य प्रमाणात क्लच वापरत म्हणजे भानावर रहात चौथा, तिसरा, दुसरा असे करत ‘खडखडाट’ होऊ न देता न्यूट्रलला येऊन पुरेसा विसावा घेणे अत्यंत फलदायी असते. या ‘पिट-स्टॉप’ मधील तेल-पाण्यामुळे इंजिन, टायर, गियर बॉक्स व क्लच जरा थंड झाले की आहेच नव्या जोमाने पहिला ते पाचवा गियर; अर्थात मनाचे ‘क्लच-भान’ ठेवून.
+      </p>
+
+      <p>
+        जमाना ‘ऑटोमॅटिक’चा असला तरी आजही दर्दी वाहनचालक गियरची वाहने चालवण्यासच प्राधान्य देतात कारण त्यात ‘ड्राइव्ह’ करणे आनंददायक असते. पुरेसे क्लच-भान ठेवले तर आयुष्याच्या गियर-वाहनातला प्रवास देखील काही वेगळीच ‘ड्राइव्हानुभूती’ देत असावा. मनाचा क्लच दाबून निदान पहिला गियर तरी टाकून बघायला हवा!
+      </p>
+    </article>
+
+    <!-- Centered Closing Date / Number from original document -->
+    <div class="w-full text-center text-slate-500 dark:text-slate-400 font-medium text-base sm:text-lg my-10">
+      २०२४११०७
+    </div>
+  </main>
+
+  <!-- Non-intrusive Toast for feedback -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-sm font-medium rounded-full shadow-lg transition-opacity duration-300 opacity-0 pointer-events-none z-50">
+    <!-- Message inserted dynamically -->
+  </div>
+
+  <script>
+    // Theme toggle handling
+    const htmlElement = document.documentElement;
+    const themeToggleBtn = document.getElementById('themeToggle');
+
+    // Check system preference or stored theme
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      htmlElement.classList.add('dark');
+      htmlElement.classList.remove('light');
+    }
+
+    themeToggleBtn.addEventListener('click', () => {
+      if (htmlElement.classList.contains('dark')) {
+        htmlElement.classList.remove('dark');
+        htmlElement.classList.add('light');
+      } else {
+        htmlElement.classList.add('dark');
+        htmlElement.classList.remove('light');
+      }
+    });
+
+    // Toast Notification Helper
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
+      }, 2500);
+    }
+
+    // Share Functionality with Fallback
+    const shareBtn = document.getElementById('shareBtn');
+    shareBtn.addEventListener('click', async () => {
+      const shareData = {
+        title: 'न्यूट्रल गियर आणि क्लच!',
+        text: 'न्यूट्रल गियर आणि क्लच! - आयुष्याच्या प्रवासावरील एक सुंदर लेख.',
+        url: window.location.href
+      };
+
+      if (navigator.share) {
+        try {
+          await navigator.share(shareData);
+        } catch (err) {
+          // Fallback if dismissed or failed
+          copyUrlFallback();
+        }
+      } else {
+        copyUrlFallback();
+      }
+    });
+
+    function copyUrlFallback() {
+      const tempInput = document.createElement('input');
+      tempInput.value = window.location.href;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      try {
+        document.execCommand('copy');
+        showToast('लिंक कॉपी झाली!');
+      } catch (e) {
+        showToast('लिंक कॉपी करणे शक्य झाले नाही');
+      }
+      document.body.removeChild(tempInput);
+    }
+  </script>
+</body>
+</html>
